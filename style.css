@@ -1,0 +1,102 @@
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Courier Prime', monospace;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    user-select: none;
+}
+
+.header {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    font-size: 11px;
+    color: #666;
+    letter-spacing: 1px;
+}
+
+.container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 80px;
+}
+
+.score-area h1 {
+    font-size: 48px;
+    margin: 0;
+    font-weight: normal;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.currency {
+    color: #00F0FF;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin: 0;
+    text-align: center;
+}
+
+.core-ring {
+    margin: 40px 0;
+    position: relative;
+}
+
+.cipher-logo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 80px;
+    color: #00F0FF;
+    background: radial-gradient(circle, #0a0a0a, #000);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cipher-logo:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 40px rgba(0, 240, 255, 0.8);
+}
+
+.blink-text {
+    color: #444;
+    font-size: 12px;
+    letter-spacing: 2px;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0.3; } }
+
+.nav-dock {
+    position: absolute;
+    bottom: 25px;
+    width: 85%;
+    height: 60px;
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-item {
+    font-size: 10px;
+    color: #555;
+    font-weight: bold;
+}
+.nav-item.active { color: #00F0FF; text-shadow: 0 0 5px #00F0FF; }
