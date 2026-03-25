@@ -5,80 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Cipher Core</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- INTRO LOADING (Fix: Will vanish completely) -->
+    <!-- 1. CINEMATIC INTRO -->
     <div id="intro-layer">
-        <div class="loader-circle"></div>
-        <div class="loader-text">ESTABLISHING SECURE CONNECTION...</div>
-    </div>
-
-    <!-- APP HEADER -->
-    <div class="top-bar">
-        <div class="menu-icon" onclick="openMenu()">☰</div>
-        <div class="rank-display">RANK: <span style="color:#d4af37">INITIATE</span></div>
-        <div class="wallet-icon">WALLET</div>
-    </div>
-
-    <!-- SIDE MENU (Hidden by default) -->
-    <div id="side-drawer" class="sidebar">
-        <div class="sidebar-header">
-            <h3>SYSTEM MENU</h3>
-            <div class="close-icon" onclick="closeMenu()">✕</div>
+        <div class="intro-logo-container">
+            <!-- TERA ASLI LOGO -->
+            <img src="https://pbs.twimg.com/profile_images/1766696986422239232/W-d3lYwI_400x400.jpg" alt="Cipher Logo" class="intro-img">
+            <div class="ring-loader"></div>
         </div>
-        <a href="#">Whitepaper (Locked)</a>
-        <a href="#">Roadmap</a>
-        <a href="#">Team</a>
-        <a href="#">Settings</a>
+        <div class="typing-text">DECRYPTING THE MATRIX...</div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-container">
+    <!-- 2. MAIN APP -->
+    <div id="app-container">
         
-        <!-- BALANCE -->
-        <div class="balance-box">
-            <p>TOTAL ASSETS</p>
-            <h1 id="balance-display">0.00 <span class="unit">CPR</span></h1>
-        </div>
-
-        <!-- THE BLACK CARD (Centerpiece) -->
-        <div class="black-card">
-            <div class="card-top">
-                <span>CIPHER ELITE</span>
-                <span>(((•)))</span>
+        <!-- HEADER -->
+        <div class="header">
+            <div class="profile-pill">
+                <img src="https://ui-avatars.com/api/?name=User&background=random" class="user-avatar">
+                <span>Agent-007</span>
             </div>
-            
-            <!-- THE LOGO (CSS Generated - No Broken Images) -->
-            <div class="card-center">
-                <div class="logo-coin">
-                    <span class="c-mark">C</span>
-                </div>
-            </div>
-
-            <div class="card-bottom">
-                <span>ID: 8821-4920</span>
-                <span>VALID THRU 12/99</span>
+            <div class="settings-icon" onclick="openPanel('settings-panel')">
+                <i class="fa-solid fa-gear"></i>
             </div>
         </div>
 
-        <!-- MINING BUTTON area -->
-        <div class="action-area">
-            <div id="timer-text" class="status-txt">READY TO SYNC</div>
-            <button id="mine-btn" class="glow-button" onclick="startMining()">
-                ACTIVATE PROTOCOL
+        <!-- BALANCE DISPLAY -->
+        <div class="balance-section">
+            <p>TOTAL CIPHER BALANCE</p>
+            <h1 id="main-balance">0.000</h1>
+            <div class="rank-badge">RANK: <span style="color:#00f2ea">INITIATE</span></div>
+        </div>
+
+        <!-- THE CORE (MAIN MINING) -->
+        <div class="core-stage">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring delay"></div>
+            <!-- TERA ASLI LOGO CENTER MEIN -->
+            <div class="main-logo-wrapper">
+                <img src="https://pbs.twimg.com/profile_images/1766696986422239232/W-d3lYwI_400x400.jpg" alt="Core" id="core-image">
+            </div>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <div class="mining-controls">
+            <div id="mining-timer">SYSTEM IDLE</div>
+            <button id="mine-btn" onclick="startMining()">
+                <i class="fa-solid fa-power-off"></i> INITIATE PROTOCOL
             </button>
         </div>
 
+        <!-- FEATURES GRID (Whitepaper/Roadmap) -->
+        <div class="features-grid">
+            <div class="f-card" onclick="openPanel('roadmap-panel')">
+                <i class="fa-solid fa-route"></i>
+                <span>Roadmap</span>
+            </div>
+            <div class="f-card" onclick="openPanel('whitepaper-panel')">
+                <i class="fa-solid fa-file-contract"></i>
+                <span>Whitepaper</span>
+            </div>
+            <div class="f-card">
+                <i class="fa-brands fa-twitter"></i>
+                <span>Join X</span>
+            </div>
+        </div>
+
     </div>
 
-    <!-- BOTTOM DOCK -->
-    <div class="dock">
-        <div class="dock-item active">HOME</div>
-        <div class="dock-item">CARDS</div>
-        <div class="dock-item">TASKS</div>
-        <div class="dock-item">FRIENDS</div>
+    <!-- 3. POPUP PANELS (Real Content) -->
+    
+    <!-- ROADMAP PANEL -->
+    <div id="roadmap-panel" class="panel">
+        <div class="panel-header">
+            <h2>PROJECT ROADMAP</h2>
+            <button class="close-btn" onclick="closePanel('roadmap-panel')">✕</button>
+        </div>
+        <div class="panel-content">
+            <div class="timeline">
+                <div class="timeline-item active">
+                    <div class="dot"></div>
+                    <h3>Phase 1: Inception</h3>
+                    <p>Community Building & Core Mining Launch.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="dot"></div>
+                    <h3>Phase 2: The Awakening</h3>
+                    <p>Referral System & Node Validation.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="dot"></div>
+                    <h3>Phase 3: Mainnet</h3>
+                    <p>Token Listing on T1 Exchanges.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WHITEPAPER PANEL -->
+    <div id="whitepaper-panel" class="panel">
+        <div class="panel-header">
+            <h2>THE PROTOCOL</h2>
+            <button class="close-btn" onclick="closePanel('whitepaper-panel')">✕</button>
+        </div>
+        <div class="panel-content">
+            <div class="wp-text">
+                <h3>1. Introduction</h3>
+                <p>The Cipher Core is not just a token; it is a decentralized identity layer for the future internet.</p>
+                <h3>2. Proof of Intelligence</h3>
+                <p>Unlike tap-to-earn models which exploit labor, Cipher rewards strategic network participation.</p>
+                <h3>3. Tokenomics</h3>
+                <p>Total Supply: 1,000,000,000<br>Community: 60%<br>Liquidity: 20%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-users"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-wallet"></i></div>
     </div>
 
     <script src="script.js"></script>
