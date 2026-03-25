@@ -1,50 +1,59 @@
-// VARIABLES
-let balance = 0.00;
-let isMining = false;
-const balanceEl = document.getElementById('balance');
-const miningBtn = document.getElementById('mining-btn');
-const timerEl = document.getElementById('timer');
-const introScreen = document.getElementById('intro-screen');
-
-// 1. INTRO ANIMATION LOGIC
-window.onload = function() {
+// WAIT FOR PAGE LOAD
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. REMOVE INTRO SCREEN
     setTimeout(() => {
-        introScreen.style.opacity = '0';
+        const intro = document.getElementById('intro-layer');
+        intro.style.opacity = '0';
+        // Wait for fade out then remove completely (Fixing button click issue)
         setTimeout(() => {
-            introScreen.style.display = 'none';
+            intro.style.display = 'none'; 
+        }, 500);
+    }, 2000);
+
+    // VARIABLES
+    let balance = 0.00;
+    let isMining = false;
+    const balanceDisplay = document.getElementById('balance-display');
+    const timerText = document.getElementById('timer-text');
+    const mineBtn = document.getElementById('mine-btn');
+
+    // 2. MINING FUNCTION
+    window.startMining = function() {
+        if(isMining) return; // Agar pehle se chal raha hai to ruk jao
+
+        isMining = true;
+        
+        // UI Change
+        mineBtn.innerHTML = "MINING ACTIVE";
+        mineBtn.style.background = "#1a1a1a";
+        mineBtn.style.color = "#00f2ea"; // Cyan color
+        mineBtn.style.boxShadow = "none";
+        
+        // Timer Start
+        timerText.innerText = "SESSION ENDS IN 11:59:59";
+        timerText.style.color = "#00f2ea";
+
+        // Vibrate
+        if(navigator.vibrate) navigator.vibrate(50);
+
+        // Fake Mining Loop
+        setInterval(() => {
+            balance += 0.005; // Slow increase
+            // Update Balance Text
+            balanceDisplay.innerHTML = balance.toFixed(3) + ' <span class="unit">CPR</span>';
         }, 1000);
-    }, 2500); // 2.5 seconds loading time
-};
+    }
 
-// 2. MENU TOGGLE LOGIC
-function toggleMenu() {
-    const menu = document.getElementById('side-menu');
-    menu.classList.toggle('active');
-}
+    // 3. MENU FUNCTIONS
+    const sidebar = document.getElementById('side-drawer');
+    
+    window.openMenu = function() {
+        sidebar.classList.add('open');
+    }
+    
+    window.closeMenu = function() {
+        sidebar.classList.remove('open');
+    }
 
-// 3. MINING LOGIC (12 HOURS)
-miningBtn.addEventListener('click', () => {
-    if (isMining) return;
-
-    // Start Mining
-    isMining = true;
-    miningBtn.innerText = "MINING IN PROGRESS...";
-    miningBtn.disabled = true;
-    timerEl.innerText = "11:59:59 REMAINING";
-    timerEl.style.color = "#00f2ea"; // Neon Blue
-
-    // Haptic Feedback
-    if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-
-    // Start Balance Increment Loop
-    startMiningLoop();
 });
-
-function startMiningLoop() {
-    setInterval(() => {
-        if(isMining) {
-            balance += 0.01; // Dheere dheere badhega (Real feel)
-            balanceEl.innerText = balance.toFixed(2);
-        }
-    }, 1000); // Har second update
-}
