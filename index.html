@@ -2,92 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Cipher Core</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Premium Font (Inter) - No more Hacker style -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- INTRO ANIMATION (Loading Screen) -->
-    <div id="intro-screen">
-        <div class="intro-logo">
-            <img src="https://pbs.twimg.com/profile_images/1766696986422239232/W-d3lYwI_400x400.jpg" alt="Logo" class="pulse-logo">
-        </div>
-        <div class="loading-bar">
-            <div class="progress"></div>
-        </div>
-        <p>INITIALIZING PROTOCOL...</p>
+    <!-- INTRO LOADING (Fix: Will vanish completely) -->
+    <div id="intro-layer">
+        <div class="loader-circle"></div>
+        <div class="loader-text">ESTABLISHING SECURE CONNECTION...</div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="app-content">
+    <!-- APP HEADER -->
+    <div class="top-bar">
+        <div class="menu-icon" onclick="openMenu()">☰</div>
+        <div class="rank-display">RANK: <span style="color:#d4af37">INITIATE</span></div>
+        <div class="wallet-icon">WALLET</div>
+    </div>
+
+    <!-- SIDE MENU (Hidden by default) -->
+    <div id="side-drawer" class="sidebar">
+        <div class="sidebar-header">
+            <h3>SYSTEM MENU</h3>
+            <div class="close-icon" onclick="closeMenu()">✕</div>
+        </div>
+        <a href="#">Whitepaper (Locked)</a>
+        <a href="#">Roadmap</a>
+        <a href="#">Team</a>
+        <a href="#">Settings</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
         
-        <!-- Header with Menu -->
-        <div class="header">
-            <div class="menu-btn" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
+        <!-- BALANCE -->
+        <div class="balance-box">
+            <p>TOTAL ASSETS</p>
+            <h1 id="balance-display">0.00 <span class="unit">CPR</span></h1>
+        </div>
+
+        <!-- THE BLACK CARD (Centerpiece) -->
+        <div class="black-card">
+            <div class="card-top">
+                <span>CIPHER ELITE</span>
+                <span>(((•)))</span>
             </div>
-            <div class="user-rank">RANK: <span class="gold-text">INITIATE</span></div>
-            <div class="settings-btn"><i class="fas fa-wallet"></i></div>
-        </div>
-
-        <!-- Sidebar Menu (Hidden) -->
-        <div id="side-menu" class="side-menu">
-            <div class="menu-header">
-                <h2>CIPHER OS</h2>
-                <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
+            
+            <!-- THE LOGO (CSS Generated - No Broken Images) -->
+            <div class="card-center">
+                <div class="logo-coin">
+                    <span class="c-mark">C</span>
+                </div>
             </div>
-            <ul class="menu-list">
-                <li><i class="fas fa-file-alt"></i> Whitepaper</li>
-                <li><i class="fas fa-road"></i> Roadmap</li>
-                <li><i class="fas fa-users"></i> Team</li>
-                <li><i class="fas fa-cog"></i> Settings</li>
-            </ul>
-        </div>
 
-        <!-- Balance Section -->
-        <div class="balance-container">
-            <p class="balance-label">TOTAL ASSETS</p>
-            <h1 id="balance">0.00 <span class="currency">CPR</span></h1>
-        </div>
-
-        <!-- Main Card Area -->
-        <div class="card-area">
-            <div class="glass-card">
-                <div class="card-header">
-                    <span>CIPHER IDENTITY</span>
-                    <i class="fas fa-wifi"></i>
-                </div>
-                <!-- LOGO IMAGE HERE -->
-                <div class="card-logo-center">
-                    <img src="https://pbs.twimg.com/profile_images/1766696986422239232/W-d3lYwI_400x400.jpg" alt="Core">
-                </div>
-                <div class="card-footer">
-                    <span>ID: 8821-4920</span>
-                    <span>VALID</span>
-                </div>
+            <div class="card-bottom">
+                <span>ID: 8821-4920</span>
+                <span>VALID THRU 12/99</span>
             </div>
         </div>
 
-        <!-- Mining Button (12 Hours) -->
-        <div class="mining-section">
-            <div class="mining-timer" id="timer">SESSION EXPIRED</div>
-            <button id="mining-btn" class="start-btn">
+        <!-- MINING BUTTON area -->
+        <div class="action-area">
+            <div id="timer-text" class="status-txt">READY TO SYNC</div>
+            <button id="mine-btn" class="glow-button" onclick="startMining()">
                 ACTIVATE PROTOCOL
             </button>
         </div>
 
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="nav-item active"><i class="fas fa-home"></i><span>Home</span></div>
-            <div class="nav-item"><i class="fas fa-layer-group"></i><span>Cards</span></div>
-            <div class="nav-item"><i class="fas fa-tasks"></i><span>Missions</span></div>
-            <div class="nav-item"><i class="fas fa-user-friends"></i><span>Invite</span></div>
-        </div>
+    </div>
+
+    <!-- BOTTOM DOCK -->
+    <div class="dock">
+        <div class="dock-item active">HOME</div>
+        <div class="dock-item">CARDS</div>
+        <div class="dock-item">TASKS</div>
+        <div class="dock-item">FRIENDS</div>
     </div>
 
     <script src="script.js"></script>
