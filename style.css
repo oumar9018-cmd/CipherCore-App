@@ -1,102 +1,133 @@
+/* PREMIUM THEME - NO HACKER STYLE */
+:root {
+    --bg-color: #050505;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --text-color: #ffffff;
+    --accent-color: #ffffff; /* White Gold */
+    --neon-blue: #00f2ea;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 body {
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Courier Prime', monospace;
     margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif; /* Clean Font */
     overflow: hidden;
     user-select: none;
 }
 
-.header {
-    width: 90%;
-    display: flex;
-    justify-content: space-between;
-    padding-top: 15px;
-    font-size: 11px;
-    color: #666;
-    letter-spacing: 1px;
-}
-
-.container {
-    flex-grow: 1;
+/* INTRO SCREEN */
+#intro-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 9999;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    margin-bottom: 80px;
+    align-items: center;
+    transition: opacity 1s ease;
 }
-
-.score-area h1 {
-    font-size: 48px;
-    margin: 0;
-    font-weight: normal;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-.currency {
-    color: #00F0FF;
-    font-size: 14px;
-    letter-spacing: 2px;
-    margin: 0;
-    text-align: center;
-}
-
-.core-ring {
-    margin: 40px 0;
-    position: relative;
-}
-
-.cipher-logo {
-    width: 140px;
-    height: 140px;
+.pulse-logo {
+    width: 100px;
     border-radius: 50%;
-    border: 1px solid #333;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+.loading-bar {
+    width: 150px; height: 4px; background: #333; margin-top: 20px; border-radius: 2px;
+}
+.progress {
+    width: 0%; height: 100%; background: #fff;
+    animation: load 2.5s ease-out forwards;
+}
+@keyframes load { 100% { width: 100%; } }
+#intro-screen p { font-size: 10px; letter-spacing: 3px; margin-top: 10px; color: #666; }
+
+/* APP HEADER */
+.header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    font-size: 80px;
-    color: #00F0FF;
-    background: radial-gradient(circle, #0a0a0a, #000);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
-    cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 20px;
 }
+.menu-btn, .settings-btn { font-size: 20px; cursor: pointer; }
+.user-rank { font-size: 12px; letter-spacing: 1px; color: #888; }
+.gold-text { color: #d4af37; font-weight: bold; }
 
-.cipher-logo:active {
-    transform: scale(0.95);
-    box-shadow: 0 0 40px rgba(0, 240, 255, 0.8);
+/* SIDE MENU */
+.side-menu {
+    position: fixed; top: 0; left: -250px;
+    width: 250px; height: 100%;
+    background: #111;
+    border-right: 1px solid #333;
+    transition: 0.3s;
+    z-index: 1000;
+    padding: 20px;
 }
+.side-menu.active { left: 0; }
+.menu-header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+.menu-list { list-style: none; padding: 0; }
+.menu-list li { padding: 15px 0; border-bottom: 1px solid #222; font-size: 14px; color: #aaa; }
+.menu-list li i { margin-right: 10px; width: 20px; }
 
-.blink-text {
-    color: #444;
-    font-size: 12px;
-    letter-spacing: 2px;
-    animation: blink 2s infinite;
-}
+/* BALANCE */
+.balance-container { text-align: center; margin-top: 20px; }
+.balance-label { font-size: 11px; color: #666; letter-spacing: 1px; }
+#balance { font-size: 42px; margin: 5px 0; font-weight: 700; }
+.currency { font-size: 14px; color: #888; }
 
-@keyframes blink { 50% { opacity: 0.3; } }
-
-.nav-dock {
-    position: absolute;
-    bottom: 25px;
-    width: 85%;
-    height: 60px;
-    background: rgba(20, 20, 20, 0.8);
-    backdrop-filter: blur(10px);
+/* GLASS CARD (The Core) */
+.card-area { display: flex; justify-content: center; margin-top: 30px; }
+.glass-card {
+    width: 80%;
+    height: 350px; /* Big Card */
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    backdrop-filter: blur(20px);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: var(--glass-border);
+    position: relative;
+    padding: 20px;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
+.card-header { display: flex; justify-content: space-between; font-size: 12px; color: #666; }
+.card-logo-center {
+    display: flex; justify-content: center; align-items: center; flex-grow: 1;
+}
+.card-logo-center img {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.05);
+}
+.card-footer { display: flex; justify-content: space-between; font-size: 12px; font-family: monospace; color: #888; }
 
-.nav-item {
-    font-size: 10px;
-    color: #555;
-    font-weight: bold;
+/* MINING BUTTON */
+.mining-section { text-align: center; margin-top: 30px; }
+.mining-timer { font-size: 12px; color: #555; margin-bottom: 10px; }
+.start-btn {
+    background: #fff; color: #000;
+    border: none; padding: 15px 40px;
+    border-radius: 30px; font-weight: bold;
+    font-size: 14px; cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transition: 0.2s;
 }
-.nav-item.active { color: #00F0FF; text-shadow: 0 0 5px #00F0FF; }
+.start-btn:active { transform: scale(0.95); }
+.start-btn:disabled { background: #333; color: #666; box-shadow: none; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+    position: fixed; bottom: 0; width: 100%;
+    background: #0a0a0a; border-top: 1px solid #222;
+    display: flex; justify-content: space-around;
+    padding: 15px 0; padding-bottom: 25px; /* For iPhone */
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #555; font-size: 10px; }
+.nav-item i { font-size: 18px; margin-bottom: 5px; }
+.nav-item.active { color: #fff; }
