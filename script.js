@@ -1,32 +1,50 @@
+// VARIABLES
 let balance = 0.00;
+let isMining = false;
 const balanceEl = document.getElementById('balance');
 const miningBtn = document.getElementById('mining-btn');
-const statusText = document.getElementById('status-text');
+const timerEl = document.getElementById('timer');
+const introScreen = document.getElementById('intro-screen');
 
-// Time Update
-setInterval(() => {
-    const now = new Date();
-    document.getElementById('utc-time').innerText = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
-}, 1000);
-
-// Mining Action
-miningBtn.addEventListener('click', () => {
-    // Increment Balance
-    balance += 0.50;
-    balanceEl.innerText = balance.toFixed(2);
-
-    // Vibration (Mobile only)
-    if (navigator.vibrate) {
-        navigator.vibrate(15);
-    }
-
-    // Visual Feedback
-    statusText.innerText = "MINING SEQUENCE ACTIVE...";
-    statusText.style.color = "#00F0FF";
-    
-    // Reset text after 1 second
+// 1. INTRO ANIMATION LOGIC
+window.onload = function() {
     setTimeout(() => {
-        statusText.innerText = "TAP TO SYNC";
-        statusText.style.color = "#444";
-    }, 1000);
+        introScreen.style.opacity = '0';
+        setTimeout(() => {
+            introScreen.style.display = 'none';
+        }, 1000);
+    }, 2500); // 2.5 seconds loading time
+};
+
+// 2. MENU TOGGLE LOGIC
+function toggleMenu() {
+    const menu = document.getElementById('side-menu');
+    menu.classList.toggle('active');
+}
+
+// 3. MINING LOGIC (12 HOURS)
+miningBtn.addEventListener('click', () => {
+    if (isMining) return;
+
+    // Start Mining
+    isMining = true;
+    miningBtn.innerText = "MINING IN PROGRESS...";
+    miningBtn.disabled = true;
+    timerEl.innerText = "11:59:59 REMAINING";
+    timerEl.style.color = "#00f2ea"; // Neon Blue
+
+    // Haptic Feedback
+    if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+
+    // Start Balance Increment Loop
+    startMiningLoop();
 });
+
+function startMiningLoop() {
+    setInterval(() => {
+        if(isMining) {
+            balance += 0.01; // Dheere dheere badhega (Real feel)
+            balanceEl.innerText = balance.toFixed(2);
+        }
+    }, 1000); // Har second update
+}
