@@ -3,97 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cipher Quantum</title>
+    <title>The Cipher Core</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Sci-Fi Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- LIVE BACKGROUND (Animated Particles) -->
-    <canvas id="neural-canvas"></canvas>
-
-    <!-- INTRO OVERLAY -->
-    <div id="intro-layer">
-        <div class="intro-content">
-            <div class="cipher-glitch" data-text="CIPHER">CIPHER</div>
-            <div class="loading-bar"><div class="bar-fill"></div></div>
-            <p>INITIALIZING QUANTUM PROTOCOL...</p>
-        </div>
+    <!-- INTRO -->
+    <div id="intro">
+        <!-- APNA DIRECT LINK YAHAN DALNA -->
+        <img src="https://i.ibb.co/0y041YhX/image.png" class="intro-img">
     </div>
 
-    <!-- MAIN INTERFACE -->
-    <div id="interface">
+    <!-- MAIN APP -->
+    <div id="app">
         
-        <!-- Top Bar -->
-        <div class="glass-header">
-            <div class="user-badge">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>NODE: ACTIVE</span>
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <i class="fas fa-shield-alt"></i>
+                <span id="rank-name">INITIATE NODE</span>
             </div>
-            <div class="settings-trigger"><i class="fa-solid fa-gear"></i></div>
+            <div class="settings"><i class="fas fa-sliders-h"></i></div>
         </div>
 
-        <!-- Balance Card -->
-        <div class="balance-card">
+        <!-- Balance -->
+        <div class="balance-wrap">
             <span class="label">MINED ASSETS</span>
             <h1 id="balance">0.000</h1>
             <span class="currency">CPR</span>
         </div>
 
-        <!-- THE REACTOR (Centerpiece) -->
-        <div class="core-wrapper">
-            <div class="reactor-container" id="reactor-btn" onclick="toggleMining()">
-                <div class="ring outer-ring"></div>
-                <div class="ring middle-ring"></div>
-                <div class="ring inner-ring"></div>
-                <div class="core-text">C</div>
-                <div class="status-glow"></div>
-            </div>
+        <!-- HERO STAGE (LOGO) -->
+        <div class="hero-stage">
+            <div class="glow-circle"></div>
+            <!-- APNA DIRECT LINK YAHAN BHI DALNA -->
+            <img src="https://i.ibb.co/0y041YhX/image.png" id="mining-btn" onclick="mine()">
         </div>
 
-        <!-- Mining Control -->
-        <div class="control-panel">
-            <div id="timer-display">SYSTEM STANDBY</div>
-            <div class="status-line">TAP CORE TO SYNC</div>
+        <!-- Status -->
+        <div class="status-wrap">
+            <p id="timer">TAP CORE TO SYNC</p>
+            <div class="progress-track"><div id="progress-bar"></div></div>
         </div>
 
-        <!-- Features Menu (Sliding Glass) -->
-        <div class="glass-dock">
-            <div class="dock-item" onclick="openPanel('roadmap')">
-                <i class="fa-solid fa-route"></i>
-                <span>Map</span>
+        <!-- Bottom Dock -->
+        <div class="dock-menu">
+            <div class="dock-item" onclick="openP('roadmap')">
+                <i class="fas fa-route"></i>
+                <span>Roadmap</span>
             </div>
-            <div class="dock-item" onclick="openPanel('whitepaper')">
-                <i class="fa-solid fa-file-contract"></i>
-                <span>Paper</span>
+            <div class="dock-item" onclick="openP('whitepaper')">
+                <i class="fas fa-file-contract"></i>
+                <span>Papers</span>
             </div>
-            <div class="dock-item">
-                <i class="fa-brands fa-twitter"></i>
-                <span>Comm</span>
+            <div class="dock-item" onclick="openP('referral')">
+                <i class="fas fa-users"></i>
+                <span>Invite</span>
             </div>
         </div>
 
     </div>
 
-    <!-- POPUP PANELS -->
-    <div id="roadmap" class="slide-panel">
-        <h2>PROJECT ROADMAP</h2>
-        <div class="panel-content">
-            <div class="milestone done">
-                <div class="m-dot"></div>
-                <h4>Phase 1: Genesis</h4>
-                <p>Protocol initialization & core mining.</p>
-            </div>
-            <div class="milestone">
-                <div class="m-dot"></div>
-                <h4>Phase 2: The Network</h4>
-                <p>Node expansion & validator rewards.</p>
+    <!-- 1. ROADMAP PAGE -->
+    <div id="roadmap" class="sheet">
+        <div class="sheet-head">
+            <h2>System Roadmap</h2>
+            <button onclick="closeP('roadmap')">✕</button>
+        </div>
+        <div class="sheet-body">
+            <div class="timeline">
+                <div class="event done">
+                    <div class="dot"></div>
+                    <h4>Phase 1: Genesis (Live)</h4>
+                    <p>Protocol initialization, core mining launch, and community formation.</p>
+                </div>
+                <div class="event">
+                    <div class="dot"></div>
+                    <h4>Phase 2: The Network</h4>
+                    <p>Referral node validation system. Squads and leaderboard integration.</p>
+                </div>
+                <div class="event">
+                    <div class="dot"></div>
+                    <h4>Phase 3: Utility Launch</h4>
+                    <p>Beta release of Cipher VPN and Private Browser. Token generation event (TGE).</p>
+                </div>
+                <div class="event">
+                    <div class="dot"></div>
+                    <h4>Phase 4: Mainnet</h4>
+                    <p>Listing on Tier-1 Exchanges. Decentralized Governance (DAO) activation.</p>
+                </div>
             </div>
         </div>
-        <button class="close-panel" onclick="closePanel('roadmap')">CLOSE</button>
+    </div>
+
+    <!-- 2. WHITEPAPER PAGE -->
+    <div id="whitepaper" class="sheet">
+        <div class="sheet-head">
+            <h2>The Protocol</h2>
+            <button onclick="closeP('whitepaper')">✕</button>
+        </div>
+        <div class="sheet-body text-content">
+            <h3>Abstract</h3>
+            <p>The digital world is broken. Your data is sold, your attention is farmed. Cipher Core is the reset button.</p>
+            
+            <h3>Proof of Time (PoT)</h3>
+            <p>Unlike Bitcoin's Proof of Work which wastes energy, or tap-games that waste effort, Cipher uses <b>Proof of Time</b>. By syncing your node daily, you prove you are a real human securing the network.</p>
+
+            <h3>Tokenomics</h3>
+            <ul>
+                <li><b>Total Supply:</b> 1 Billion CPR</li>
+                <li><b>Community Mining:</b> 70%</li>
+                <li><b>Liquidity:</b> 20%</li>
+                <li><b>Development:</b> 10%</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. REFERRAL PAGE (New) -->
+    <div id="referral" class="sheet">
+        <div class="sheet-head">
+            <h2>Invite Nodes</h2>
+            <button onclick="closeP('referral')">✕</button>
+        </div>
+        <div class="sheet-body">
+            <div class="ref-card">
+                <h3>Build Your Network</h3>
+                <p>Invite friends to boost your mining speed. More active nodes = stronger security.</p>
+                
+                <div class="ref-stats">
+                    <div class="stat-box">
+                        <span id="ref-count">0</span>
+                        <label>Friends</label>
+                    </div>
+                    <div class="stat-box">
+                        <span>+10%</span>
+                        <label>Boost</label>
+                    </div>
+                </div>
+
+                <button class="invite-btn" onclick="shareLink()">
+                    <i class="fab fa-telegram-plane"></i> Invite via Telegram
+                </button>
+                <div class="copy-link" onclick="copyLink()">
+                    <span id="link-text">t.me/TheCipherCore_bot</span>
+                    <i class="fas fa-copy"></i>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
