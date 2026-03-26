@@ -1,124 +1,158 @@
-// --- CONFIGURATION ---
-const STORAGE_KEY = 'cipher_data_v1';
-const MINING_RATE = 0.005; // Coins per second
-const SESSION_TIME = 12 * 60 * 60 * 1000; // 12 Hours in milliseconds
+/* --- PART 1: QUANTUM BACKGROUND ENGINE --- */
+const canvas = document.getElementById('neural-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-// --- STATE MANAGEMENT ---
-let state = {
-    balance: 0.000,
-    miningStartTime: 0,
-    isMining: false
-};
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
 
-// --- DOM ELEMENTS ---
-const elBalance = document.getElementById('main-balance');
-const elTimer = document.getElementById('mining-timer');
-const elBtn = document.getElementById('mine-btn');
-const introLayer = document.getElementById('intro-layer');
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 1.5;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw() {
+        ctx.fillStyle = 'rgba(0, 243, 255, 0.4)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
 
-// --- INITIALIZATION ---
-window.onload = () => {
-    // 1. Remove Intro
-    setTimeout(() => {
-        introLayer.style.opacity = '0';
-        setTimeout(() => introLayer.style.display = 'none', 500);
-    }, 2000);
+function initParticles() {
+    particles = [];
+    for(let i=0; i<50; i++) particles.push(new Particle());
+}
 
-    // 2. Load Data from Storage
-    loadState();
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // 3. Start UI Loop
-    requestAnimationFrame(updateUI);
-};
-
-function loadState() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-        state = JSON.parse(saved);
-        // Check if mining session expired
-        const now = Date.now();
-        if (state.isMining) {
-            const elapsed = now - state.miningStartTime;
-            if (elapsed > SESSION_TIME) {
-                // Session finished while away
-                state.isMining = false;
-                state.balance += (SESSION_TIME / 1000) * MINING_RATE;
-            } else {
-                // Still mining, add catch-up balance
-                // (Realtime update happens in loop)
+    // Connect particles
+    for(let i=0; i<particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        
+        for(let j=i; j<particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if(dist < 100) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(0, 243, 255, ${0.1 - dist/1000})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
             }
         }
     }
+    requestAnimationFrame(animate);
 }
 
-function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+initParticles();
+animate();
 
-// --- MINING LOGIC ---
-window.startMining = function() {
-    if (state.isMining) return;
 
+/* --- PART 2: APP LOGIC --- */
+const CONFIG = {
+    sessionLength: 12 * 60 * 60 * 1000, // 12 Hours
+    rate: 0.008 // Speed
+};
+
+let state = {
+    balance: 0.000,
+    startTime: 0,
+    isMining: false
+};
+
+const ui = {
+    balance: document.getElementById('balance'),
+    timer: document.getElementById('timer-display'),
+    reactor: document.getElementById('reactor-btn'),
+    intro: document.getElementById('intro-layer')
+};
+
+window.onload = () => {
+    // 1. Remove Intro
+    setTimeout(() => {
+        ui.intro.style.opacity = '0';
+        setTimeout(() => ui.intro.style.display = 'none', 800);
+    }, 2200);
+
+    // 2. Load
+    const saved = localStorage.getItem('quantum_data');
+    if(saved) state = JSON.parse(saved);
+
+    // 3. Loop
+    requestAnimationFrame(gameLoop);
+};
+
+window.toggleMining = () => {
+    if(state.isMining) return;
+    
     state.isMining = true;
-    state.miningStartTime = Date.now();
-    saveState();
+    state.startTime = Date.now();
+    saveData();
     
-    // Button Feedback
-    if (navigator.vibrate) navigator.vibrate(50);
+    // Haptic
+    if(navigator.vibrate) navigator.vibrate([30, 50, 30]);
+};
+
+function saveData() {
+    localStorage.setItem('quantum_data', JSON.stringify(state));
 }
 
-// --- MAIN LOOP (Runs every frame) ---
-function updateUI() {
+window.openPanel = (id) => document.getElementById(id).classList.add('open');
+window.closePanel = (id) => document.getElementById(id).classList.remove('open');
+
+function gameLoop() {
     const now = Date.now();
-    
-    if (state.isMining) {
-        const elapsed = now - state.miningStartTime;
+
+    if(state.isMining) {
+        const elapsed = now - state.startTime;
         
-        if (elapsed < SESSION_TIME) {
-            // Mining Active
-            const earned = (elapsed / 1000) * MINING_RATE;
-            const currentDisplay = state.balance + earned;
+        if(elapsed < CONFIG.sessionLength) {
+            // Active
+            ui.reactor.classList.add('active');
             
-            elBalance.innerText = currentDisplay.toFixed(3);
+            const earned = (elapsed / 1000) * CONFIG.rate;
+            ui.balance.innerText = (state.balance + earned).toFixed(3);
             
-            // Timer Logic
-            const remaining = SESSION_TIME - elapsed;
-            const hours = Math.floor(remaining / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            const left = CONFIG.sessionLength - elapsed;
+            const h = Math.floor(left / 3600000);
+            const m = Math.floor((left % 3600000) / 60000);
+            const s = Math.floor((left % 60000) / 1000);
             
-            elTimer.innerText = `${hours}h ${minutes}m ${seconds}s REMAINING`;
-            elTimer.style.color = "#00f2ea";
-            
-            elBtn.innerHTML = "MINING IN PROGRESS...";
-            elBtn.style.opacity = "0.7";
-            elBtn.style.background = "#1a1a1a";
-            elBtn.style.color = "#fff";
+            ui.timer.innerText = `SYNCING: ${h}h ${m}m ${s}s`;
+            ui.timer.style.color = "#00f3ff";
             
         } else {
-            // Session Just Ended
+            // Done
             state.isMining = false;
-            state.balance += (SESSION_TIME / 1000) * MINING_RATE;
-            saveState();
+            state.balance += (CONFIG.sessionLength / 1000) * CONFIG.rate;
+            saveData();
+            ui.reactor.classList.remove('active');
         }
     } else {
-        // Mining Stopped
-        elBalance.innerText = state.balance.toFixed(3);
-        elTimer.innerText = "SYSTEM READY";
-        elTimer.style.color = "#666";
-        elBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> INITIATE PROTOCOL';
-        elBtn.style.opacity = "1";
-        elBtn.style.background = "#fff";
-        elBtn.style.color = "#000";
+        // Idle
+        ui.timer.innerText = "SYSTEM STANDBY";
+        ui.timer.style.color = "#666";
+        ui.balance.innerText = state.balance.toFixed(3);
     }
     
-    requestAnimationFrame(updateUI);
-}
-
-// --- PANEL LOGIC ---
-window.openPanel = function(id) {
-    document.getElementById(id).classList.add('open');
-}
-window.closePanel = function(id) {
-    document.getElementById(id).classList.remove('open');
+    requestAnimationFrame(gameLoop);
 }
