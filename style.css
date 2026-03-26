@@ -1,146 +1,171 @@
-/* --- GLOBAL SETTINGS --- */
+/* --- UNIVERSE SETUP --- */
 :root {
-    --bg-color: #080808;
-    --card-bg: #141414;
-    --primary: #ffffff;
-    --accent: #00f2ea; /* Tera Cyan Color */
-    --text-sec: #888888;
+    --neon: #00f3ff;
+    --dark: #020205;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(0, 243, 255, 0.2);
+    --font: 'Rajdhani', sans-serif;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--primary);
-    font-family: 'Inter', sans-serif;
     margin: 0; padding: 0;
-    overflow: hidden; user-select: none;
+    background-color: var(--dark);
+    color: #fff;
+    font-family: var(--font);
+    height: 100vh; overflow: hidden;
+    user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* --- INTRO SCREEN --- */
+/* --- ANIMATED BACKGROUND --- */
+#neural-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; opacity: 0.6; pointer-events: none;
+}
+
+/* --- INTRO --- */
 #intro-layer {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: #000; z-index: 9999;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    transition: opacity 0.5s ease;
-}
-.intro-img { width: 100px; border-radius: 50%; box-shadow: 0 0 30px rgba(0, 242, 234, 0.3); }
-.ring-loader {
-    width: 120px; height: 120px; border: 2px solid transparent;
-    border-top: 2px solid var(--accent); border-radius: 50%;
-    position: absolute; animation: spin 1.5s infinite linear;
-}
-.typing-text { margin-top: 30px; font-size: 12px; letter-spacing: 3px; color: var(--accent); }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* --- MAIN LAYOUT --- */
-#app-container {
-    padding: 20px; height: 100vh; box-sizing: border-box;
-    display: flex; flex-direction: column; align-items: center;
-}
-
-/* Header */
-.header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.profile-pill {
-    background: var(--card-bg); padding: 5px 15px 5px 5px;
-    border-radius: 30px; display: flex; align-items: center; gap: 10px;
-    font-size: 12px; font-weight: 600; border: 1px solid #222;
-}
-.user-avatar { width: 25px; height: 25px; border-radius: 50%; }
-.settings-icon { padding: 10px; color: var(--text-sec); }
-
-/* Balance */
-.balance-section { text-align: center; margin-bottom: 30px; }
-.balance-section p { font-size: 10px; color: var(--text-sec); letter-spacing: 1px; margin: 0; }
-#main-balance { font-size: 48px; margin: 5px 0; font-weight: 800; }
-.rank-badge { font-size: 12px; background: rgba(0, 242, 234, 0.1); padding: 5px 15px; border-radius: 10px; display: inline-block; color: #fff; }
-
-/* --- THE CORE (CENTER) --- */
-.core-stage {
-    position: relative; width: 200px; height: 200px;
     display: flex; justify-content: center; align-items: center;
-    margin-bottom: 40px;
+    transition: opacity 0.8s ease;
 }
-.main-logo-wrapper img {
-    width: 140px; height: 140px; border-radius: 50%;
-    z-index: 10; position: relative;
-    box-shadow: 0 0 50px rgba(0, 242, 234, 0.15);
+.intro-content { text-align: center; }
+.cipher-glitch {
+    font-size: 40px; font-weight: bold; letter-spacing: 5px;
+    color: var(--neon); text-shadow: 0 0 20px var(--neon);
+    animation: flicker 2s infinite;
 }
-.pulse-ring {
-    position: absolute; width: 100%; height: 100%;
-    border-radius: 50%; border: 1px solid rgba(0, 242, 234, 0.3);
-    animation: pulse 3s infinite ease-out;
+.loading-bar {
+    width: 200px; height: 2px; background: #333; margin: 20px auto;
 }
-.pulse-ring.delay { animation-delay: 1.5s; }
-@keyframes pulse {
-    0% { transform: scale(0.8); opacity: 1; }
-    100% { transform: scale(1.5); opacity: 0; }
+.bar-fill {
+    width: 0%; height: 100%; background: var(--neon);
+    animation: load 2s ease-in-out forwards;
 }
+@keyframes load { 100% { width: 100%; } }
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 24%, 55% { opacity: 0.4; }
+}
+
+/* --- INTERFACE LAYER --- */
+#interface {
+    position: relative; z-index: 10;
+    height: 100%; display: flex; flex-direction: column;
+    justify-content: space-between; padding: 20px;
+    box-sizing: border-box;
+}
+
+/* GLASS HEADER */
+.glass-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+}
+.user-badge { color: var(--neon); font-size: 14px; letter-spacing: 1px; }
+.user-badge i { margin-right: 5px; }
+
+/* BALANCE */
+.balance-card { text-align: center; margin-top: 20px; }
+.balance-card .label { font-size: 12px; letter-spacing: 3px; color: #aaa; }
+#balance {
+    font-size: 60px; font-weight: 700; margin: 0;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+}
+.currency { color: var(--neon); font-size: 18px; font-weight: bold; }
+
+/* --- THE REACTOR (CSS 3D LOGO) --- */
+.core-wrapper {
+    flex-grow: 1; display: flex; justify-content: center; align-items: center;
+}
+.reactor-container {
+    width: 200px; height: 200px; position: relative;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: transform 0.2s;
+}
+.reactor-container:active { transform: scale(0.95); }
+
+.ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid transparent;
+}
+.outer-ring {
+    width: 100%; height: 100%;
+    border-top: 2px solid var(--neon);
+    border-bottom: 2px solid var(--neon);
+    animation: spin 8s linear infinite;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+.middle-ring {
+    width: 70%; height: 70%;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #fff;
+    animation: spinReverse 4s linear infinite;
+}
+.inner-ring {
+    width: 90%; height: 90%;
+    border: 1px dashed rgba(255,255,255,0.3);
+}
+.core-text {
+    font-size: 80px; font-weight: bold; color: #fff;
+    text-shadow: 0 0 10px #fff; z-index: 20;
+}
+.status-glow {
+    position: absolute; width: 10%; height: 10%;
+    background: var(--neon); border-radius: 50%;
+    box-shadow: 0 0 50px 20px var(--neon);
+    opacity: 0; transition: opacity 0.5s;
+}
+
+/* Active State */
+.reactor-container.active .status-glow { opacity: 0.8; }
+.reactor-container.active .outer-ring { animation-duration: 2s; border-color: #fff; }
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spinReverse { 100% { transform: rotate(-360deg); } }
 
 /* --- CONTROLS --- */
-.mining-controls { text-align: center; width: 100%; margin-bottom: 20px; }
-#mining-timer { font-size: 14px; color: var(--text-sec); margin-bottom: 10px; font-family: monospace; }
-#mine-btn {
-    background: #fff; color: #000; border: none;
-    padding: 18px 40px; border-radius: 16px; width: 80%;
-    font-weight: 700; font-size: 16px; cursor: pointer;
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
-    transition: 0.2s;
-}
-#mine-btn:active { transform: scale(0.95); }
+.control-panel { text-align: center; margin-bottom: 20px; }
+#timer-display { font-size: 16px; letter-spacing: 2px; color: var(--neon); }
+.status-line { font-size: 10px; color: #666; margin-top: 5px; }
 
-/* --- FEATURES GRID --- */
-.features-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
-    width: 100%; margin-bottom: 20px;
+/* GLASS DOCK */
+.glass-dock {
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around;
+    padding: 15px 0;
+    margin-bottom: 20px;
 }
-.f-card {
-    background: var(--card-bg); border-radius: 16px;
-    padding: 15px; text-align: center;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    border: 1px solid #222; cursor: pointer; transition: 0.2s;
+.dock-item {
+    display: flex; flex-direction: column; align-items: center;
+    color: #888; font-size: 10px; transition: 0.3s;
 }
-.f-card:active { background: #222; }
-.f-card i { font-size: 20px; color: var(--accent); }
-.f-card span { font-size: 10px; font-weight: 600; }
+.dock-item i { font-size: 22px; margin-bottom: 5px; }
+.dock-item:hover, .dock-item:active { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
 
-/* --- SLIDE UP PANELS (Roadmap/Whitepaper) --- */
-.panel {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 80%;
-    background: #111; border-top-left-radius: 25px; border-top-right-radius: 25px;
-    z-index: 500; transition: 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
-    border-top: 1px solid #333; box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+/* --- PANELS --- */
+.slide-panel {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+    background: #0f0f13; border-top: 2px solid var(--neon);
+    border-radius: 25px 25px 0 0;
+    z-index: 100; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    padding: 20px; box-sizing: border-box;
     display: flex; flex-direction: column;
 }
-.panel.open { bottom: 0; }
-.panel-header {
-    padding: 20px; display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid #222;
+.slide-panel.open { bottom: 0; }
+.slide-panel h2 { color: var(--neon); margin-top: 0; }
+.panel-content { flex-grow: 1; overflow-y: auto; }
+.milestone { padding-left: 20px; border-left: 2px solid #333; margin-bottom: 20px; position: relative; }
+.m-dot { width: 10px; height: 10px; background: #333; border-radius: 50%; position: absolute; left: -6px; top: 0; }
+.milestone.done .m-dot { background: var(--neon); box-shadow: 0 0 10px var(--neon); }
+.close-panel {
+    width: 100%; padding: 15px; background: #222; border: none; color: #fff;
+    font-weight: bold; cursor: pointer; border-radius: 10px;
 }
-.panel-content { padding: 20px; overflow-y: auto; flex-grow: 1; }
-.close-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
-
-/* Timeline Design */
-.timeline-item {
-    border-left: 2px solid #333; padding-left: 20px; margin-bottom: 20px; position: relative;
-}
-.timeline-item .dot {
-    width: 10px; height: 10px; background: #333; border-radius: 50%;
-    position: absolute; left: -6px; top: 5px;
-}
-.timeline-item.active .dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-.timeline-item h3 { margin: 0; font-size: 16px; }
-.timeline-item p { margin: 5px 0 0; font-size: 12px; color: #888; }
-
-/* Whitepaper Design */
-.wp-text h3 { color: var(--accent); margin-top: 20px; }
-.wp-text p { font-size: 14px; line-height: 1.5; color: #ccc; }
-
-/* Bottom Nav */
-.bottom-nav {
-    position: fixed; bottom: 20px; width: 90%; left: 5%;
-    background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(10px);
-    border-radius: 20px; display: flex; justify-content: space-around;
-    padding: 15px 0; border: 1px solid #333;
-}
-.nav-item { color: #666; font-size: 18px; }
-.nav-item.active { color: #fff; }
