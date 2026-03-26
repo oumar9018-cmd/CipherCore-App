@@ -1,171 +1,138 @@
-/* --- UNIVERSE SETUP --- */
+/* --- DARKEST THEME --- */
 :root {
-    --neon: #00f3ff;
-    --dark: #020205;
-    --glass: rgba(255, 255, 255, 0.05);
-    --border: rgba(0, 243, 255, 0.2);
-    --font: 'Rajdhani', sans-serif;
+    --bg: #000000;
+    --text: #ffffff;
+    --panel: #111111;
+    --accent: #ffffff; 
+    --gray: #666666;
 }
 
 body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
     margin: 0; padding: 0;
-    background-color: var(--dark);
-    color: #fff;
-    font-family: var(--font);
     height: 100vh; overflow: hidden;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* --- ANIMATED BACKGROUND --- */
-#neural-canvas {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 0; opacity: 0.6; pointer-events: none;
-}
-
 /* --- INTRO --- */
-#intro-layer {
+#intro {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000; z-index: 9999;
+    background: #000; z-index: 999;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 0.8s ease;
+    transition: opacity 1s;
 }
-.intro-content { text-align: center; }
-.cipher-glitch {
-    font-size: 40px; font-weight: bold; letter-spacing: 5px;
-    color: var(--neon); text-shadow: 0 0 20px var(--neon);
-    animation: flicker 2s infinite;
-}
-.loading-bar {
-    width: 200px; height: 2px; background: #333; margin: 20px auto;
-}
-.bar-fill {
-    width: 0%; height: 100%; background: var(--neon);
-    animation: load 2s ease-in-out forwards;
-}
-@keyframes load { 100% { width: 100%; } }
-@keyframes flicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-    20%, 24%, 55% { opacity: 0.4; }
+.intro-img { width: 150px; animation: fadePulse 2s infinite; }
+@keyframes fadePulse {
+    0% { opacity: 0.5; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.5; transform: scale(0.95); }
 }
 
-/* --- INTERFACE LAYER --- */
-#interface {
-    position: relative; z-index: 10;
-    height: 100%; display: flex; flex-direction: column;
-    justify-content: space-between; padding: 20px;
-    box-sizing: border-box;
+/* --- HEADER --- */
+.header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+.user-info { 
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #888; 
+    border: 1px solid #333; padding: 5px 12px; border-radius: 20px;
 }
+.user-info i { margin-right: 5px; color: #fff; }
 
-/* GLASS HEADER */
-.glass-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px;
-    background: var(--glass);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    border: 1px solid var(--border);
-}
-.user-badge { color: var(--neon); font-size: 14px; letter-spacing: 1px; }
-.user-badge i { margin-right: 5px; }
+/* --- BALANCE --- */
+.balance-wrap { text-align: center; margin-top: 10px; }
+.label { font-size: 10px; letter-spacing: 2px; color: var(--gray); }
+#balance { font-size: 56px; font-weight: 800; margin: 5px 0; letter-spacing: -2px; }
+.currency { color: #fff; font-weight: 600; font-size: 14px; }
 
-/* BALANCE */
-.balance-card { text-align: center; margin-top: 20px; }
-.balance-card .label { font-size: 12px; letter-spacing: 3px; color: #aaa; }
-#balance {
-    font-size: 60px; font-weight: 700; margin: 0;
-    text-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
-}
-.currency { color: var(--neon); font-size: 18px; font-weight: bold; }
-
-/* --- THE REACTOR (CSS 3D LOGO) --- */
-.core-wrapper {
+/* --- HERO STAGE --- */
+.hero-stage {
     flex-grow: 1; display: flex; justify-content: center; align-items: center;
+    position: relative; height: 320px;
 }
-.reactor-container {
-    width: 200px; height: 200px; position: relative;
-    display: flex; justify-content: center; align-items: center;
-    cursor: pointer; transition: transform 0.2s;
+#mining-btn {
+    width: 250px; cursor: pointer; position: relative; z-index: 10;
+    transition: transform 0.1s;
 }
-.reactor-container:active { transform: scale(0.95); }
-
-.ring {
-    position: absolute; border-radius: 50%;
-    border: 1px solid transparent;
+#mining-btn:active { transform: scale(0.96); }
+.glow-circle {
+    position: absolute; width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: breathe 4s infinite ease-in-out;
 }
-.outer-ring {
-    width: 100%; height: 100%;
-    border-top: 2px solid var(--neon);
-    border-bottom: 2px solid var(--neon);
-    animation: spin 8s linear infinite;
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-}
-.middle-ring {
-    width: 70%; height: 70%;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #fff;
-    animation: spinReverse 4s linear infinite;
-}
-.inner-ring {
-    width: 90%; height: 90%;
-    border: 1px dashed rgba(255,255,255,0.3);
-}
-.core-text {
-    font-size: 80px; font-weight: bold; color: #fff;
-    text-shadow: 0 0 10px #fff; z-index: 20;
-}
-.status-glow {
-    position: absolute; width: 10%; height: 10%;
-    background: var(--neon); border-radius: 50%;
-    box-shadow: 0 0 50px 20px var(--neon);
-    opacity: 0; transition: opacity 0.5s;
+@keyframes breathe {
+    0% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 0.3; }
 }
 
-/* Active State */
-.reactor-container.active .status-glow { opacity: 0.8; }
-.reactor-container.active .outer-ring { animation-duration: 2s; border-color: #fff; }
+/* --- STATUS --- */
+.status-wrap { width: 85%; margin: 0 auto 20px auto; text-align: center; }
+#timer { color: var(--gray); font-size: 12px; margin-bottom: 10px; letter-spacing: 1px; }
+.progress-track { width: 100%; height: 4px; background: #222; border-radius: 10px; overflow: hidden; }
+#progress-bar { width: 0%; height: 100%; background: #fff; transition: width 0.5s; }
 
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes spinReverse { 100% { transform: rotate(-360deg); } }
-
-/* --- CONTROLS --- */
-.control-panel { text-align: center; margin-bottom: 20px; }
-#timer-display { font-size: 16px; letter-spacing: 2px; color: var(--neon); }
-.status-line { font-size: 10px; color: #666; margin-top: 5px; }
-
-/* GLASS DOCK */
-.glass-dock {
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    border-top: 1px solid var(--border);
+/* --- DOCK MENU --- */
+.dock-menu {
     display: flex; justify-content: space-around;
-    padding: 15px 0;
-    margin-bottom: 20px;
+    padding: 20px 0 30px 0; border-top: 1px solid #111; background: #050505;
 }
 .dock-item {
-    display: flex; flex-direction: column; align-items: center;
-    color: #888; font-size: 10px; transition: 0.3s;
+    text-align: center; color: var(--gray); font-size: 10px;
+    cursor: pointer; transition: 0.2s;
 }
-.dock-item i { font-size: 22px; margin-bottom: 5px; }
-.dock-item:hover, .dock-item:active { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+.dock-item:hover { color: #fff; }
+.dock-item i { font-size: 20px; margin-bottom: 5px; display: block; }
 
-/* --- PANELS --- */
-.slide-panel {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
-    background: #0f0f13; border-top: 2px solid var(--neon);
-    border-radius: 25px 25px 0 0;
-    z-index: 100; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    padding: 20px; box-sizing: border-box;
+/* --- SHEETS (Detailed Content) --- */
+.sheet {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 75%;
+    background: var(--panel); border-radius: 20px 20px 0 0;
+    z-index: 100; transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 -10px 40px rgba(255,255,255,0.05);
     display: flex; flex-direction: column;
 }
-.slide-panel.open { bottom: 0; }
-.slide-panel h2 { color: var(--neon); margin-top: 0; }
-.panel-content { flex-grow: 1; overflow-y: auto; }
-.milestone { padding-left: 20px; border-left: 2px solid #333; margin-bottom: 20px; position: relative; }
-.m-dot { width: 10px; height: 10px; background: #333; border-radius: 50%; position: absolute; left: -6px; top: 0; }
-.milestone.done .m-dot { background: var(--neon); box-shadow: 0 0 10px var(--neon); }
-.close-panel {
-    width: 100%; padding: 15px; background: #222; border: none; color: #fff;
-    font-weight: bold; cursor: pointer; border-radius: 10px;
+.sheet.active { bottom: 0; }
+.sheet-head {
+    padding: 20px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #222;
+}
+.sheet-body { padding: 25px; color: #ccc; line-height: 1.6; overflow-y: auto; }
+
+/* Timeline */
+.timeline { margin-left: 10px; }
+.event { border-left: 2px solid #333; padding-left: 20px; margin-bottom: 25px; position: relative; }
+.event.done { border-left-color: #fff; }
+.event .dot { 
+    width: 10px; height: 10px; background: #333; border-radius: 50%; 
+    position: absolute; left: -6px; top: 0; 
+}
+.event.done .dot { background: #fff; box-shadow: 0 0 10px #fff; }
+.event h4 { margin: 0 0 5px 0; color: #fff; }
+.event p { margin: 0; font-size: 13px; color: #999; }
+
+/* Text Content */
+.text-content h3 { color: #fff; margin-top: 20px; }
+.text-content p { font-size: 14px; color: #aaa; }
+.text-content ul { padding-left: 20px; color: #aaa; font-size: 14px; }
+.text-content li { margin-bottom: 5px; }
+.text-content b { color: #fff; }
+
+/* Referral Page */
+.ref-card { text-align: center; }
+.ref-stats { display: flex; justify-content: center; gap: 20px; margin: 30px 0; }
+.stat-box { background: #222; padding: 15px; border-radius: 10px; min-width: 80px; }
+.stat-box span { display: block; font-size: 20px; font-weight: bold; color: #fff; }
+.stat-box label { font-size: 11px; color: #888; }
+
+.invite-btn {
+    width: 100%; padding: 15px; background: #fff; color: #000;
+    border: none; border-radius: 12px; font-weight: bold; font-size: 16px;
+    cursor: pointer; margin-bottom: 15px;
+}
+.copy-link {
+    background: #111; border: 1px solid #333; padding: 15px;
+    border-radius: 12px; display: flex; justify-content: space-between;
+    font-size: 12px; color: #888; cursor: pointer;
 }
