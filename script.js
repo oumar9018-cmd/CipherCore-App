@@ -1,158 +1,115 @@
-/* --- PART 1: QUANTUM BACKGROUND ENGINE --- */
-const canvas = document.getElementById('neural-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
+// CONFIGURATION
+const SESSION = 12 * 60 * 60 * 1000;
+const RATE = 0.005;
 
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-class Particle {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 1.5;
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw() {
-        ctx.fillStyle = 'rgba(0, 243, 255, 0.4)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-function initParticles() {
-    particles = [];
-    for(let i=0; i<50; i++) particles.push(new Particle());
-}
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Connect particles
-    for(let i=0; i<particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-        
-        for(let j=i; j<particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            
-            if(dist < 100) {
-                ctx.beginPath();
-                ctx.strokeStyle = `rgba(0, 243, 255, ${0.1 - dist/1000})`;
-                ctx.lineWidth = 0.5;
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-            }
-        }
-    }
-    requestAnimationFrame(animate);
-}
-
-initParticles();
-animate();
-
-
-/* --- PART 2: APP LOGIC --- */
-const CONFIG = {
-    sessionLength: 12 * 60 * 60 * 1000, // 12 Hours
-    rate: 0.008 // Speed
-};
-
+// APP STATE
 let state = {
     balance: 0.000,
     startTime: 0,
-    isMining: false
+    mining: false,
+    referrals: 0
 };
 
+// UI REFERENCES
 const ui = {
     balance: document.getElementById('balance'),
-    timer: document.getElementById('timer-display'),
-    reactor: document.getElementById('reactor-btn'),
-    intro: document.getElementById('intro-layer')
+    timer: document.getElementById('timer'),
+    bar: document.getElementById('progress-bar'),
+    intro: document.getElementById('intro'),
+    rank: document.getElementById('rank-name'),
+    refCount: document.getElementById('ref-count')
 };
 
+// INITIALIZE
 window.onload = () => {
-    // 1. Remove Intro
+    // 1. Intro Animation
     setTimeout(() => {
         ui.intro.style.opacity = '0';
         setTimeout(() => ui.intro.style.display = 'none', 800);
-    }, 2200);
+    }, 2000);
 
-    // 2. Load
-    const saved = localStorage.getItem('quantum_data');
+    // 2. Load Data
+    const saved = localStorage.getItem('cipher_final_v2');
     if(saved) state = JSON.parse(saved);
 
-    // 3. Loop
-    requestAnimationFrame(gameLoop);
+    // 3. Update Rank based on Balance
+    updateRank();
+
+    // 4. Start Loop
+    requestAnimationFrame(loop);
 };
 
-window.toggleMining = () => {
-    if(state.isMining) return;
-    
-    state.isMining = true;
+// MINING ACTION
+window.mine = () => {
+    if(state.mining) return;
+    state.mining = true;
     state.startTime = Date.now();
-    saveData();
-    
-    // Haptic
-    if(navigator.vibrate) navigator.vibrate([30, 50, 30]);
+    save();
+    if(navigator.vibrate) navigator.vibrate(50);
 };
 
-function saveData() {
-    localStorage.setItem('quantum_data', JSON.stringify(state));
+// NAVIGATION
+window.openP = (id) => document.getElementById(id).classList.add('active');
+window.closeP = (id) => document.getElementById(id).classList.remove('active');
+
+// REFERRAL LOGIC
+window.shareLink = () => {
+    const url = "https://t.me/TheCipherCore_bot?start=ref123";
+    const text = "Join the Cipher Protocol. The Reset is here.";
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+};
+
+window.copyLink = () => {
+    navigator.clipboard.writeText("https://t.me/TheCipherCore_bot?start=ref123");
+    alert("Referral Link Copied!");
+};
+
+// HELPERS
+function save() {
+    localStorage.setItem('cipher_final_v2', JSON.stringify(state));
 }
 
-window.openPanel = (id) => document.getElementById(id).classList.add('open');
-window.closePanel = (id) => document.getElementById(id).classList.remove('open');
+function updateRank() {
+    let r = "INITIATE NODE";
+    if(state.balance > 100) r = "VALIDATOR NODE";
+    if(state.balance > 1000) r = "MASTER NODE";
+    ui.rank.innerText = r;
+    ui.refCount.innerText = state.referrals;
+}
 
-function gameLoop() {
+// MAIN LOOP
+function loop() {
     const now = Date.now();
-
-    if(state.isMining) {
+    
+    if(state.mining) {
         const elapsed = now - state.startTime;
         
-        if(elapsed < CONFIG.sessionLength) {
-            // Active
-            ui.reactor.classList.add('active');
-            
-            const earned = (elapsed / 1000) * CONFIG.rate;
+        if(elapsed < SESSION) {
+            const earned = (elapsed / 1000) * RATE;
             ui.balance.innerText = (state.balance + earned).toFixed(3);
             
-            const left = CONFIG.sessionLength - elapsed;
-            const h = Math.floor(left / 3600000);
-            const m = Math.floor((left % 3600000) / 60000);
-            const s = Math.floor((left % 60000) / 1000);
-            
+            // Timer Logic
+            const left = SESSION - elapsed;
+            const h = Math.floor(left/3600000);
+            const m = Math.floor((left%3600000)/60000);
+            const s = Math.floor((left%60000)/1000);
             ui.timer.innerText = `SYNCING: ${h}h ${m}m ${s}s`;
-            ui.timer.style.color = "#00f3ff";
+            ui.timer.style.color = "#fff";
+            
+            ui.bar.style.width = ((elapsed/SESSION)*100) + "%";
             
         } else {
-            // Done
-            state.isMining = false;
-            state.balance += (CONFIG.sessionLength / 1000) * CONFIG.rate;
-            saveData();
-            ui.reactor.classList.remove('active');
+            state.mining = false;
+            state.balance += (SESSION/1000) * RATE;
+            updateRank(); // Check if rank upgrade
+            save();
+            ui.bar.style.width = "0%";
         }
     } else {
-        // Idle
-        ui.timer.innerText = "SYSTEM STANDBY";
-        ui.timer.style.color = "#666";
         ui.balance.innerText = state.balance.toFixed(3);
+        ui.timer.innerText = "TAP CORE TO START";
+        ui.timer.style.color = "#666";
     }
     
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(loop);
 }
