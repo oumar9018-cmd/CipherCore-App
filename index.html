@@ -2,67 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AEXRON ULTRA-OS | THE TERMINATOR</title>
+    <title>AEXRON v14.0 | THE SINGULARITY</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.19.0/css/xterm.css" />
     <style>
-        body { background: #000; margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: 'Courier New', monospace; }
-        #terminal-wrapper { flex: 1; padding: 5px; border: 1px solid #00ffcc; margin: 5px; box-shadow: 0 0 15px #00ffcc; }
-        #status-bar { height: 30px; background: #0a0a0a; color: #00ffcc; border-top: 1px solid #00ffcc; display: flex; justify-content: space-between; padding: 0 15px; align-items: center; font-size: 12px; }
+        body { background: #000; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #terminal-wrapper { flex: 1; padding: 10px; border: 1px solid #39ff14; margin: 5px; box-shadow: 0 0 20px #39ff14; }
+        #status { height: 30px; background: #050505; color: #39ff14; border-top: 1px solid #39ff14; display: flex; justify-content: space-between; padding: 0 15px; align-items: center; font-family: monospace; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div id="terminal-wrapper"><div id="terminal"></div></div>
-    <div id="status-bar">
-        <div>CORE: x86 VIRTUAL MACHINE</div>
-        <div id="msg">INITIATING BOOT... [WAIT 30s]</div>
-        <div>KING@AEXRON_ULTRA</div>
+    <div id="status">
+        <div id="state">SYSTEM: CORE LOADING...</div>
+        <div>KING@SINGULARITY</div>
     </div>
 
+    <!-- Terminal & Engine -->
     <script src="https://cdn.jsdelivr.net/npm/xterm@4.19.0/lib/xterm.js"></script>
-    <!-- v86 Emulator Engine -->
     <script src="https://copy.sh/v86/build/v86_all.js"></script>
 
     <script>
         const term = new Terminal({
             cursorBlink: true,
-            theme: { background: '#000', foreground: '#00ffcc' }
+            theme: { background: '#000', foreground: '#39ff14' }
         });
         term.open(document.getElementById('terminal'));
 
-        term.writeln('\x1b[36m[*] AEXRON ULTRA-OS v13.0 BOOTING...');
-        term.writeln('[*] ARCHITECTURE: x86 (PC-LEVEL EMULATION)');
-        term.writeln('[*] REPOSITORY: GLOBAL LINUX (ALPINE)\x1b[0m');
+        term.writeln('\x1b[32m[!] AEXRON SINGULARITY v14.0 ACTIVATED');
+        term.writeln('[!] LINKING TO NEURAL LINUX CORE...');
 
-        // Virtual Machine (VM) Configuration
         var emulator = new V86Starter({
             wasm_path: "https://copy.sh/v86/build/v86.wasm",
-            memory_size: 96 * 1024 * 1024, // 96MB RAM (Mobile optimized)
+            memory_size: 32 * 1024 * 1024, // 32MB - Super Fast for Mobile
             vga_as_text_mode: true,
-            
-            // Ye images 100% real Linux images hain
+            // Tiny Linux Image (Fastest Boot)
             bzimage: { url: "https://copy.sh/v86/images/bzImage.bin" },
             initrd: { url: "https://copy.sh/v86/images/rootfs.cpio.gz" },
             autostart: true,
         });
 
-        // Linux Output to Terminal
+        let booted = false;
         emulator.add_listener("serial0-output-char", function(char) {
-            term.write(char);
-            if(char === '#') document.getElementById('msg').innerText = "SYSTEM: READY (ROOT@AEXRON)";
-        });
-
-        // User Input to Linux
-        term.onData(data => {
-            for(let i = 0; i < data.length; i++) {
-                emulator.serial0_send(data.charCodeAt(i));
+            if(!booted) {
+                term.clear();
+                booted = true;
+                document.getElementById('state').innerText = "SYSTEM: KERNEL BOOTED (ROOT@AEXRON)";
             }
+            term.write(char);
         });
 
-        emulator.add_listener("emulator-ready", function() {
-            term.writeln('[+] VIRTUAL ENGINE READY. DOWNLOADING KERNEL...');
-            document.getElementById('msg').innerText = "DOWNLOADING REAL OS (20MB)...";
+        term.onData(data => {
+            for(let i = 0; i < data.length; i++) emulator.serial0_send(data.charCodeAt(i));
         });
+
+        // Agar 20 seconds mein boot na ho
+        setTimeout(() => {
+            if(!booted) {
+                term.writeln('\r\n\x1b[31m[!] SLOW CONNECTION DETECTED. RETRYING...\x1b[0m');
+                term.writeln('[*] If screen stays black, try on Google Chrome App.');
+            }
+        }, 20000);
     </script>
 </body>
 </html>
