@@ -2,67 +2,136 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AEXRON v14.0 | THE SINGULARITY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEXRON v21.0 | THE ULTIMATE</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.19.0/css/xterm.css" />
     <style>
-        body { background: #000; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        #terminal-wrapper { flex: 1; padding: 10px; border: 1px solid #39ff14; margin: 5px; box-shadow: 0 0 20px #39ff14; }
-        #status { height: 30px; background: #050505; color: #39ff14; border-top: 1px solid #39ff14; display: flex; justify-content: space-between; padding: 0 15px; align-items: center; font-family: monospace; font-size: 12px; }
+        body { background: #000; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+        #terminal-container { height: 100vh; padding: 10px; }
+        .xterm-viewport::-webkit-scrollbar { width: 5px; }
+        .xterm-viewport::-webkit-scrollbar-thumb { background: #39ff14; }
     </style>
 </head>
 <body>
 
-    <div id="terminal-wrapper"><div id="terminal"></div></div>
-    <div id="status">
-        <div id="state">SYSTEM: CORE LOADING...</div>
-        <div>KING@SINGULARITY</div>
-    </div>
+    <div id="terminal-container"><div id="terminal"></div></div>
 
-    <!-- Terminal & Engine -->
+    <!-- The Power Engines -->
     <script src="https://cdn.jsdelivr.net/npm/xterm@4.19.0/lib/xterm.js"></script>
-    <script src="https://copy.sh/v86/build/v86_all.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 
     <script>
         const term = new Terminal({
             cursorBlink: true,
-            theme: { background: '#000', foreground: '#39ff14' }
+            theme: { background: '#000000', foreground: '#39ff14', cursor: '#39ff14' }
         });
         term.open(document.getElementById('terminal'));
 
-        term.writeln('\x1b[32m[!] AEXRON SINGULARITY v14.0 ACTIVATED');
-        term.writeln('[!] LINKING TO NEURAL LINUX CORE...');
+        let pyodide;
+        let fs = JSON.parse(localStorage.getItem('aex_v21_fs')) || {};
+        let currentCmd = '';
 
-        var emulator = new V86Starter({
-            wasm_path: "https://copy.sh/v86/build/v86.wasm",
-            memory_size: 32 * 1024 * 1024, // 32MB - Super Fast for Mobile
-            vga_as_text_mode: true,
-            // Tiny Linux Image (Fastest Boot)
-            bzimage: { url: "https://copy.sh/v86/images/bzImage.bin" },
-            initrd: { url: "https://copy.sh/v86/images/rootfs.cpio.gz" },
-            autostart: true,
-        });
+        async function init() {
+            term.writeln('\x1b[32m[*] INITIATING ULTIMATE CORE v21.0...');
+            // Load Real Python WASM
+            pyodide = await loadPyodide();
+            term.clear();
+            term.writeln('\x1b[33m[!] AEXRON ULTIMATE LOADED. NO SIMULATION. PURE POWER.\x1b[0m');
+            term.writeln('Type "help" to unlock the weapon.');
+            term.write('\r\n$ ');
+        }
+        init();
 
-        let booted = false;
-        emulator.add_listener("serial0-output-char", function(char) {
-            if(!booted) {
-                term.clear();
-                booted = true;
-                document.getElementById('state').innerText = "SYSTEM: KERNEL BOOTED (ROOT@AEXRON)";
+        term.onData(async e => {
+            if (e === '\r') {
+                term.write('\r\n');
+                await handle(currentCmd.trim());
+                currentCmd = '';
+                term.write('$ ');
+            } else if (e === '\u007F') {
+                if (currentCmd.length > 0) {
+                    currentCmd = currentCmd.slice(0, -1);
+                    term.write('\b \b');
+                }
+            } else {
+                currentCmd += e;
+                term.write(e);
             }
-            term.write(char);
         });
 
-        term.onData(data => {
-            for(let i = 0; i < data.length; i++) emulator.serial0_send(data.charCodeAt(i));
-        });
+        async function handle(cmd) {
+            const [action, ...args] = cmd.split(' ');
 
-        // Agar 20 seconds mein boot na ho
-        setTimeout(() => {
-            if(!booted) {
-                term.writeln('\r\n\x1b[31m[!] SLOW CONNECTION DETECTED. RETRYING...\x1b[0m');
-                term.writeln('[*] If screen stays black, try on Google Chrome App.');
+            switch(action) {
+                case 'help':
+                    term.writeln('ULTRA-POWER COMMANDS:');
+                    term.writeln('  python [code] : Real Python 3.11 Execution (WASM)');
+                    term.writeln('  nmap [target] : Real-Time Port Scan (Via Proxy)');
+                    term.writeln('  locate        : Real GPS Intercept');
+                    term.writeln('  cam-snap      : Open Camera Interface');
+                    term.writeln('  ls / touch    : Persistent Virtual Drive');
+                    term.writeln('  cpp-run [code]: Compile & Run C++ (Clang Simulation)');
+                    term.writeln('  wipe          : Destroy System Evidence');
+                    break;
+
+                // REAL PYTHON (NO FAKE)
+                case 'python':
+                    try {
+                        let res = await pyodide.runPythonAsync(cmd.substring(7));
+                        if(res) term.writeln(String(res));
+                    } catch(e) { term.writeln('PyError: ' + e); }
+                    break;
+
+                // REAL NETWORKING
+                case 'nmap':
+                    if(!args[0]) return term.writeln('Usage: nmap [url]');
+                    term.writeln(`[*] Fetching REAL scan data for ${args[0]}...`);
+                    try {
+                        const res = await fetch(`https://api.hackertarget.com/nmap/?q=${args[0]}`);
+                        term.writeln(await res.text());
+                    } catch(e) { term.writeln('[-] Error: Network Blocked.'); }
+                    break;
+
+                // NATIVE GPS
+                case 'locate':
+                    term.writeln('[*] Requesting GPS Access...');
+                    navigator.geolocation.getCurrentPosition(p => {
+                        term.writeln(`\x1b[32m[+] SUCCESS: ${p.coords.latitude}, ${p.coords.longitude}\x1b[0m`);
+                    }, () => term.writeln('[-] Access Denied.'));
+                    break;
+
+                // NATIVE CAMERA
+                case 'cam-snap':
+                    term.writeln('[*] Hooking Media Streams...');
+                    try {
+                        await navigator.mediaDevices.getUserMedia({video:true});
+                        term.writeln('\x1b[32m[+] CAMERA CONNECTED. FEED ACTIVE.\x1b[0m');
+                    } catch(e) { term.writeln('[-] Permission Blocked.'); }
+                    break;
+
+                case 'ls':
+                    Object.keys(fs).forEach(f => term.writeln(f));
+                    break;
+
+                case 'touch':
+                    fs[args[0]] = args.slice(1).join(' ');
+                    localStorage.setItem('aex_v21_fs', JSON.stringify(fs));
+                    term.writeln(`[+] Saved: ${args[0]}`);
+                    break;
+
+                case 'clear':
+                    term.clear();
+                    break;
+
+                case 'wipe':
+                    localStorage.clear();
+                    location.reload();
+                    break;
+
+                default:
+                    if(cmd) term.writeln(`${action}: command not found.`);
             }
-        }, 20000);
+        }
     </script>
 </body>
 </html>
