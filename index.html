@@ -2,158 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Cipher Core</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>AEXRON ULTRA-OS | THE TERMINATOR</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.19.0/css/xterm.css" />
+    <style>
+        body { background: #000; margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: 'Courier New', monospace; }
+        #terminal-wrapper { flex: 1; padding: 5px; border: 1px solid #00ffcc; margin: 5px; box-shadow: 0 0 15px #00ffcc; }
+        #status-bar { height: 30px; background: #0a0a0a; color: #00ffcc; border-top: 1px solid #00ffcc; display: flex; justify-content: space-between; padding: 0 15px; align-items: center; font-size: 12px; }
+    </style>
 </head>
 <body>
 
-    <!-- INTRO -->
-    <div id="intro">
-        <!-- APNA DIRECT LINK YAHAN DALNA -->
-        <img src="https://i.ibb.co/0y041YhX/image.png" class="intro-img">
+    <div id="terminal-wrapper"><div id="terminal"></div></div>
+    <div id="status-bar">
+        <div>CORE: x86 VIRTUAL MACHINE</div>
+        <div id="msg">INITIATING BOOT... [WAIT 30s]</div>
+        <div>KING@AEXRON_ULTRA</div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="app">
-        
-        <!-- Header -->
-        <div class="header">
-            <div class="user-info">
-                <i class="fas fa-shield-alt"></i>
-                <span id="rank-name">INITIATE NODE</span>
-            </div>
-            <div class="settings"><i class="fas fa-sliders-h"></i></div>
-        </div>
+    <script src="https://cdn.jsdelivr.net/npm/xterm@4.19.0/lib/xterm.js"></script>
+    <!-- v86 Emulator Engine -->
+    <script src="https://copy.sh/v86/build/v86_all.js"></script>
 
-        <!-- Balance -->
-        <div class="balance-wrap">
-            <span class="label">MINED ASSETS</span>
-            <h1 id="balance">0.000</h1>
-            <span class="currency">CPR</span>
-        </div>
+    <script>
+        const term = new Terminal({
+            cursorBlink: true,
+            theme: { background: '#000', foreground: '#00ffcc' }
+        });
+        term.open(document.getElementById('terminal'));
 
-        <!-- HERO STAGE (LOGO) -->
-        <div class="hero-stage">
-            <div class="glow-circle"></div>
-            <!-- APNA DIRECT LINK YAHAN BHI DALNA -->
-            <img src="https://i.ibb.co/0y041YhX/image.png" id="mining-btn" onclick="mine()">
-        </div>
+        term.writeln('\x1b[36m[*] AEXRON ULTRA-OS v13.0 BOOTING...');
+        term.writeln('[*] ARCHITECTURE: x86 (PC-LEVEL EMULATION)');
+        term.writeln('[*] REPOSITORY: GLOBAL LINUX (ALPINE)\x1b[0m');
 
-        <!-- Status -->
-        <div class="status-wrap">
-            <p id="timer">TAP CORE TO SYNC</p>
-            <div class="progress-track"><div id="progress-bar"></div></div>
-        </div>
-
-        <!-- Bottom Dock -->
-        <div class="dock-menu">
-            <div class="dock-item" onclick="openP('roadmap')">
-                <i class="fas fa-route"></i>
-                <span>Roadmap</span>
-            </div>
-            <div class="dock-item" onclick="openP('whitepaper')">
-                <i class="fas fa-file-contract"></i>
-                <span>Papers</span>
-            </div>
-            <div class="dock-item" onclick="openP('referral')">
-                <i class="fas fa-users"></i>
-                <span>Invite</span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- 1. ROADMAP PAGE -->
-    <div id="roadmap" class="sheet">
-        <div class="sheet-head">
-            <h2>System Roadmap</h2>
-            <button onclick="closeP('roadmap')">✕</button>
-        </div>
-        <div class="sheet-body">
-            <div class="timeline">
-                <div class="event done">
-                    <div class="dot"></div>
-                    <h4>Phase 1: Genesis (Live)</h4>
-                    <p>Protocol initialization, core mining launch, and community formation.</p>
-                </div>
-                <div class="event">
-                    <div class="dot"></div>
-                    <h4>Phase 2: The Network</h4>
-                    <p>Referral node validation system. Squads and leaderboard integration.</p>
-                </div>
-                <div class="event">
-                    <div class="dot"></div>
-                    <h4>Phase 3: Utility Launch</h4>
-                    <p>Beta release of Cipher VPN and Private Browser. Token generation event (TGE).</p>
-                </div>
-                <div class="event">
-                    <div class="dot"></div>
-                    <h4>Phase 4: Mainnet</h4>
-                    <p>Listing on Tier-1 Exchanges. Decentralized Governance (DAO) activation.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. WHITEPAPER PAGE -->
-    <div id="whitepaper" class="sheet">
-        <div class="sheet-head">
-            <h2>The Protocol</h2>
-            <button onclick="closeP('whitepaper')">✕</button>
-        </div>
-        <div class="sheet-body text-content">
-            <h3>Abstract</h3>
-            <p>The digital world is broken. Your data is sold, your attention is farmed. Cipher Core is the reset button.</p>
+        // Virtual Machine (VM) Configuration
+        var emulator = new V86Starter({
+            wasm_path: "https://copy.sh/v86/build/v86.wasm",
+            memory_size: 96 * 1024 * 1024, // 96MB RAM (Mobile optimized)
+            vga_as_text_mode: true,
             
-            <h3>Proof of Time (PoT)</h3>
-            <p>Unlike Bitcoin's Proof of Work which wastes energy, or tap-games that waste effort, Cipher uses <b>Proof of Time</b>. By syncing your node daily, you prove you are a real human securing the network.</p>
+            // Ye images 100% real Linux images hain
+            bzimage: { url: "https://copy.sh/v86/images/bzImage.bin" },
+            initrd: { url: "https://copy.sh/v86/images/rootfs.cpio.gz" },
+            autostart: true,
+        });
 
-            <h3>Tokenomics</h3>
-            <ul>
-                <li><b>Total Supply:</b> 1 Billion CPR</li>
-                <li><b>Community Mining:</b> 70%</li>
-                <li><b>Liquidity:</b> 20%</li>
-                <li><b>Development:</b> 10%</li>
-            </ul>
-        </div>
-    </div>
+        // Linux Output to Terminal
+        emulator.add_listener("serial0-output-char", function(char) {
+            term.write(char);
+            if(char === '#') document.getElementById('msg').innerText = "SYSTEM: READY (ROOT@AEXRON)";
+        });
 
-    <!-- 3. REFERRAL PAGE (New) -->
-    <div id="referral" class="sheet">
-        <div class="sheet-head">
-            <h2>Invite Nodes</h2>
-            <button onclick="closeP('referral')">✕</button>
-        </div>
-        <div class="sheet-body">
-            <div class="ref-card">
-                <h3>Build Your Network</h3>
-                <p>Invite friends to boost your mining speed. More active nodes = stronger security.</p>
-                
-                <div class="ref-stats">
-                    <div class="stat-box">
-                        <span id="ref-count">0</span>
-                        <label>Friends</label>
-                    </div>
-                    <div class="stat-box">
-                        <span>+10%</span>
-                        <label>Boost</label>
-                    </div>
-                </div>
+        // User Input to Linux
+        term.onData(data => {
+            for(let i = 0; i < data.length; i++) {
+                emulator.serial0_send(data.charCodeAt(i));
+            }
+        });
 
-                <button class="invite-btn" onclick="shareLink()">
-                    <i class="fab fa-telegram-plane"></i> Invite via Telegram
-                </button>
-                <div class="copy-link" onclick="copyLink()">
-                    <span id="link-text">t.me/TheCipherCore_bot</span>
-                    <i class="fas fa-copy"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        emulator.add_listener("emulator-ready", function() {
+            term.writeln('[+] VIRTUAL ENGINE READY. DOWNLOADING KERNEL...');
+            document.getElementById('msg').innerText = "DOWNLOADING REAL OS (20MB)...";
+        });
+    </script>
 </body>
 </html>
